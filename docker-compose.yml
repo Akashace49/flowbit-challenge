@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  flowbit-network:
+    driver: bridge
+
+services:
+  mongo:
+    image: mongo
+    container_name: flowbit-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+    restart: always
+    networks:
+      - flowbit-network
+
+  api:
+    build: ./api
+    container_name: flowbit-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/usr/src/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/flowbit
+      - JWT_SECRET=supersecret123
+      - PORT=5000
+    depends_on:
+      - mongo
+    restart: always
+    command: npm run dev
+    networks:
+      - flowbit-network
+
+  n8n:
+    image: n8nio/n8n
+    container_name: flowbit-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Kolkata
+    volumes:
+      - ./data/n8n:/home/node/.n8n
+    restart: always
+    networks:
+      - flowbit-network
+
+  react-shell:
+    build:
+      context: ./react-shell
+    container_name: flowbit-react-shell
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true

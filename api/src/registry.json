@@ -1,0 +1,14 @@
+[
+    {
+        "customerId": "logisticsco",
+        "screens": [
+            { "name": "Support Tickets", "url": "/support-tickets" }
+        ]
+    },
+    {
+        "customerId": "retailgmbh",
+        "screens": [
+            { "name": "Retail Tickets", "url": "/support-tickets" }
+        ]
+    }
+]
